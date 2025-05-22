@@ -1,0 +1,47 @@
+[
+  {
+    "id": 1,
+    "name": "Camiseta Retro Colombia 98",
+    "description": "Versión clásica selección Colombia 1998",
+    "price": 159900,
+    "size": "L",
+    "category": "Camiseta",
+    "team": "Selección Colombia",
+    "shirt_type": "FAN",
+    "league_or_country": "Colombia",
+    "season": null,
+    "stock": 10,
+    "availability": "Por Encargo",
+    "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTheD2W3KnXA436-CJbOifzMdBBu9eo7vsMoQ&s"
+  },
+  {
+    "id": 2,
+    "name": "Camiseta Liverpool 23/24",
+    "description": "Versión jugador local",
+    "price": 229900,
+    "size": "M",
+    "category": "Camiseta",
+    "team": "Liverpool FC",
+    "shirt_type": "PLAYER",
+    "league_or_country": "Premier League",
+    "season": null,
+    "stock": 5,
+    "availability": "Entrega Inmediata",
+    "image_url": "https://prochampions.vtexassets.com/arquivos/ids/952919/Nike-Lfc-M-Nk-Df-Jsy-Ss-Stad-Hm-Camiseta-Manga-Corta_FN8798-688_01.jpg?v=638564005551470000"
+  },
+  {
+    "id": 3,
+    "name": "Medias FS",
+    "description": "Negras",
+    "price": 25000,
+    "size": null,
+    "category": "Medias",
+    "team": null,
+    "shirt_type": null,
+    "league_or_country": null,
+    "season": null,
+    "stock": 5,
+    "availability": "Entrega Inmediata",
+    "image_url": "https://http2.mlstatic.com/D_NQ_NP_700576-MCO76989992788_062024-O.webp"
+  }
+]

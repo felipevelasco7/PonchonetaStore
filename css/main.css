@@ -1,0 +1,557 @@
+@import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700;800;900&display=swap');
+
+:root {
+    /* PONCHONETA Brand Colors */
+    --clr-ponchoneta-dark-green: #4a605b;   /* Primario */
+    --clr-ponchoneta-teal: #51af8e;         /* Primario */
+    --clr-ponchoneta-light-gray: #bac1b9;  /* Primario */
+    --clr-ponchoneta-dark-accent: #182126; /* Secundario (like black) */
+    --clr-ponchoneta-off-white: #f4f8eb;   /* Secundario (like light background) */
+
+    /* Mapping to your existing semantic variable names */
+    --clr-main: var(--clr-ponchoneta-dark-green);     /* Main brand color, e.g., for sidebar */
+    --clr-main-light: var(--clr-ponchoneta-teal);     /* Lighter accent, e.g., for footer text or highlights */
+    --clr-white: var(--clr-ponchoneta-off-white);   /* For backgrounds and text on dark surfaces */
+    --clr-gray: var(--clr-ponchoneta-light-gray);   /* For subtle UI elements, borders */
+
+    /* --clr-red: #961818; */ /* Original Red */
+    /* Option 1: Use a brand color for "danger" - might lack clarity */
+    /* --clr-red: var(--clr-ponchoneta-dark-accent); */
+    /* Option 2: Pick a red that complements the palette better, e.g., a more muted or darker red */
+    --clr-red: #c0392b; /* A slightly more modern, less harsh red. Adjust if needed. */
+    /* If you strictly want to use brand colors, the dark-accent is an option, but less intuitive for deletion. */
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Rubik', sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6, p, a, input, textarea, ul {
+    margin: 0;
+    padding: 0;
+}
+
+ul {
+    list-style-type: none;
+}
+
+a {
+    text-decoration: none;
+}
+
+.wrapper {
+    display: grid;
+    grid-template-columns: 1fr 4fr;
+    background-color: var(--clr-main); /* Ponchoneta Dark Green */
+}
+
+aside {
+    padding: 2rem;
+    padding-right: 0;
+    color: var(--clr-white); /* Ponchoneta Off-White (for text on dark green) */
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.logo {
+    font-weight: 700; /* Bolder for "PONCHONETA" feel */
+    font-size: 1.5rem; /* Slightly larger */
+    color: var(--clr-white); /* Text color of logo in sidebar */
+}
+
+.menu {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+}
+
+.boton-menu {
+    background-color: transparent;
+    border: 0;
+    color: var(--clr-white); /* Ponchoneta Off-White */
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-weight: 600;
+    padding: 1rem;
+    font-size: .85rem;
+    width: 100%;
+}
+
+.boton-menu.active {
+    background-color: var(--clr-white); /* Ponchoneta Off-White */
+    color: var(--clr-main); /* Ponchoneta Dark Green (text color) */
+    border-top-left-radius: 1rem;
+    border-bottom-left-radius: 1rem;
+    position: relative;
+}
+
+.boton-menu.active::before {
+    content: '';
+    position: absolute;
+    width: 1rem;
+    height: 2rem;
+    bottom: 100%;
+    right: 0;
+    background-color: transparent;
+    border-bottom-right-radius: .5rem;
+    box-shadow: 0 1rem 0 var(--clr-white); /* Ponchoneta Off-White */
+}
+
+.boton-menu.active::after {
+    content: '';
+    position: absolute;
+    width: 1rem;
+    height: 2rem;
+    top: 100%;
+    right: 0;
+    background-color: transparent;
+    border-top-right-radius: .5rem;
+    box-shadow: 0 -1rem 0 var(--clr-white); /* Ponchoneta Off-White */
+}
+
+.boton-menu > i.bi-hand-index-thumb-fill,
+.boton-menu > i.bi-hand-index-thumb {
+    transform: rotateZ(90deg);
+}
+
+.boton-carrito {
+    margin-top: 2rem;
+}
+
+.numerito {
+    background-color: var(--clr-white); /* Ponchoneta Off-White */
+    color: var(--clr-main); /* Ponchoneta Dark Green */
+    padding: .15rem .25rem;
+    border-radius: .25rem;
+}
+
+.boton-carrito.active .numerito {
+    background-color: var(--clr-main); /* Ponchoneta Dark Green */
+    color: var(--clr-white); /* Ponchoneta Off-White */
+}
+
+.texto-footer {
+    color: var(--clr-main-light); /* Ponchoneta Teal */
+    font-size: .85rem;
+}
+
+main {
+    background-color: var(--clr-white); /* Ponchoneta Off-White */
+    margin: 1rem;
+    margin-left: 0;
+    border-radius: 2rem;
+    padding: 3rem;
+}
+
+.titulo-principal {
+    color: var(--clr-ponchoneta-teal); /* Teal for main headings, as per brand guide page 5 */
+    margin-bottom: 2rem;
+    font-weight: 700; /* Ensure headings are bold */
+}
+
+.contenedor-productos {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+}
+
+.producto-imagen {
+    max-width: 100%;
+    border-radius: 1rem;
+}
+
+.producto-detalles {
+    background-color: var(--clr-main); /* Ponchoneta Dark Green */
+    color: var(--clr-white); /* Ponchoneta Off-White */
+    padding: .5rem;
+    border-radius: 1rem;
+    margin-top: -2rem;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: .25rem;
+}
+
+.producto-titulo {
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.producto-agregar {
+    border: 0;
+    background-color: var(--clr-ponchoneta-teal); /* Teal for primary action buttons */
+    color: var(--clr-ponchoneta-off-white); /* White text on teal */
+    padding: .4rem 1rem; /* Added more horizontal padding */
+    text-transform: uppercase;
+    border-radius: 2rem;
+    cursor: pointer;
+    /* border: 2px solid var(--clr-white); No border needed if bg is solid */
+    transition: background-color .2s, color .2s;
+    font-weight: 600;
+}
+
+.producto-agregar:hover {
+    background-color: var(--clr-ponchoneta-dark-green); /* Dark green on hover */
+    color: var(--clr-ponchoneta-off-white);
+}
+
+
+/** CARRITO **/
+
+.contenedor-carrito {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.carrito-vacio,
+.carrito-comprado {
+    color: var(--clr-main); /* Ponchoneta Dark Green for informative text */
+    text-align: center;
+    padding: 2rem;
+    font-size: 1.2rem;
+}
+
+.carrito-productos {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.carrito-producto {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--clr-gray); /* Ponchoneta Light Gray */
+    color: var(--clr-ponchoneta-dark-accent); /* Darker text for readability on light gray */
+    padding: .5rem;
+    padding-right: 1.5rem;
+    border-radius: 1rem;
+}
+
+.carrito-producto-imagen {
+    width: 4rem;
+    border-radius: 1rem;
+}
+
+.carrito-producto small {
+    font-size: .75rem;
+}
+
+.carrito-producto-eliminar {
+    border: 0;
+    background-color: transparent;
+    color: var(--clr-red); /* Chosen complementary red */
+    cursor: pointer;
+    font-size: 1.2rem; /* Slightly larger for easier clicking */
+}
+
+.carrito-acciones {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1rem; /* Added margin */
+}
+
+.carrito-acciones-vaciar {
+    border: 0;
+    background-color: var(--clr-gray); /* Ponchoneta Light Gray */
+    padding: 1rem;
+    border-radius: 1rem;
+    color: var(--clr-ponchoneta-dark-accent); /* Darker text */
+    text-transform: uppercase;
+    cursor: pointer;
+    font-weight: 600;
+}
+.carrito-acciones-vaciar:hover {
+    background-color: #a8afaa; /* Slightly darker gray on hover */
+}
+
+
+.carrito-acciones-derecha {
+    display: flex;
+}
+
+.carrito-acciones-total {
+    display: flex;
+    background-color: var(--clr-gray); /* Ponchoneta Light Gray */
+    padding: 1rem;
+    color: var(--clr-ponchoneta-dark-accent); /* Darker text */
+    text-transform: uppercase;
+    border-top-left-radius: 1rem;
+    border-bottom-left-radius: 1rem;
+    gap: 1rem;
+    align-items: center;
+    font-weight: 600;
+}
+
+.carrito-acciones-comprar {
+    border: 0;
+    background-color: var(--clr-ponchoneta-teal); /* Teal for primary "buy" action */
+    padding: 1rem;
+    color: var(--clr-ponchoneta-off-white); /* White text */
+    text-transform: uppercase;
+    cursor: pointer;
+    border-top-right-radius: 1rem;
+    border-bottom-right-radius: 1rem;
+    font-weight: 600;
+}
+.carrito-acciones-comprar:hover {
+    background-color: var(--clr-ponchoneta-dark-green); /* Dark green on hover */
+}
+
+
+.header-mobile {
+    display: none;
+    background-color: var(--clr-main); /* Ponchoneta Dark Green for mobile header */
+}
+
+.close-menu {
+    display: none;
+}
+
+.disabled {
+    display: none;
+}
+
+/*** MEDIA QUERIES ***/
+
+@media screen and (max-width: 850px) {
+    .contenedor-productos {
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+}
+
+@media screen and (max-width: 675px) {
+    .contenedor-productos {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media screen and (max-width: 600px) {
+
+    .wrapper {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+
+    aside {
+        position: fixed;
+        z-index: 9;
+        background-color: var(--clr-main); /* Ponchoneta Dark Green */
+        left: 0;
+        box-shadow: 0 0 0 100vmax rgba(0, 0, 0, .75);
+        transform: translateX(-100%);
+        opacity: 0;
+        visibility: hidden;
+        transition: .2s;
+    }
+
+    .aside-visible {
+        transform: translateX(0);
+        opacity: 1;
+        visibility: visible;
+    }
+
+    /* Active menu items in mobile don't need the side curves */
+    .boton-menu.active::before,
+    .boton-menu.active::after {
+        display: none;
+    }
+    .boton-menu.active { /* Ensure active background and text color are still applied */
+        background-color: var(--clr-white);
+        color: var(--clr-main);
+    }
+
+
+    main {
+        margin: 1rem;
+        margin-top: 0; /* Will be below mobile header */
+        padding: 2rem;
+    }
+
+    .contenedor-productos {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .header-mobile {
+        padding: 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        /* background-color: var(--clr-main); Added above already */
+    }
+
+    .header-mobile .logo {
+        color: var(--clr-white); /* Ponchoneta Off-White, as header is dark green */
+        font-size: 1.3rem; /* Adjusted to be slightly smaller than desktop */
+    }
+
+    .open-menu, .close-menu {
+        background-color: transparent;
+        color: var(--clr-white); /* Ponchoneta Off-White, for icons on dark green header */
+        border: 0;
+        font-size: 2rem;
+        cursor: pointer;
+    }
+
+    .close-menu {
+        display: block;
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+    }
+
+    .carrito-producto {
+        gap: 1rem;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        padding: 1rem; /* Increased padding for touch friendliness */
+    }
+
+    .carrito-producto-subtotal {
+        display: none;
+    }
+
+    .carrito-acciones {
+        flex-wrap: wrap;
+        row-gap: 1rem;
+    }
+
+    .carrito-acciones-total, .carrito-acciones-comprar {
+        width: 100%;
+        justify-content: center; /* Center text in full-width buttons */
+    }
+    .carrito-acciones-total {
+        border-radius: 1rem; /* Full radius when stacked */
+    }
+    .carrito-acciones-comprar {
+        border-radius: 1rem; /* Full radius when stacked */
+    }
+}
+
+
+
+@media screen and (max-width: 400px) {
+    .contenedor-productos {
+        grid-template-columns: 1fr;
+    }
+}
+/* Add these to your css/main.css and adjust as needed */
+
+.producto-descripcion {
+    font-size: 0.85rem;
+    /* color: #e0e0e0; /* Example: Lighter text for description on dark card background */
+    /* For Ponchoneta, text color on Dark Green card details is --clr-ponchoneta-off-white */
+    color: var(--clr-ponchoneta-off-white);
+    margin-bottom: 0.5rem;
+    min-height: 2.5em; /* Give some space for description, adjust as needed */
+    line-height: 1.4;
+}
+
+.producto-disponibilidad {
+    font-size: 0.8rem;
+    font-weight: 600; /* Bolder for emphasis */
+    padding: 0.2rem 0.6rem; /* Slightly more padding */
+    border-radius: 0.75rem; /* More rounded */
+    display: inline-block;
+    margin-bottom: 0.6rem; /* More space below */
+    color: var(--clr-ponchoneta-off-white); /* White text */
+    text-transform: uppercase; /* Uppercase for impact */
+}
+
+.producto-disponibilidad.disponible {
+    background-color: var(--clr-ponchoneta-teal); /* Teal for 'Entrega Inmediata' */
+}
+
+.producto-disponibilidad.por-encargo {
+    background-color: #e67e22; /* A warm orange for 'Por Encargo', adjust if needed */
+    /* Or you can use another brand color if suitable */
+}
+
+.producto-agotado {
+    color: var(--clr-red); /* Use your defined red from the Ponchoneta palette */
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-top: 0.5rem; /* Space above if it replaces the button */
+    padding: .4rem; /* Match button padding if it replaces it */
+    text-align: center;
+}
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem; /* Espacio entre texto e imagen */
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+.logo-img {
+    height: 7rem; /* Ajusta la altura para que quede proporcionada */
+    width: auto;
+    object-fit: contain;
+    horiz-align: left ;
+    padding: .4rem;
+
+}
+.boton-menu i, .boton-menu .icono-categoria {
+    font-size: 1.2rem;       /* Ajusta para que sea tamaño similar */
+    width: 1.2rem;           /* Para imagen */
+    height: 1.2rem;          /* Para imagen */
+    vertical-align: middle;
+    margin-right: 0.5rem;
+    object-fit: contain;
+    fill: #f4f8eb;
+}
+
+.contenedor-productos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: flex-start;
+}
+
+.producto {
+    box-sizing: border-box;
+    width: 220px; /* ancho fijo para todos */
+    height: 380px; /* alto fijo para todos */
+    border: 1px solid #ccc;
+    padding: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background-color: white;
+    border-radius: 8px;
+    transition: box-shadow 0.3s ease;
+}
+
+.producto:hover {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.producto-imagen {
+    width: 100%;
+    height: 180px; /* altura fija */
+    object-fit: contain;
+    margin-bottom: 0.5rem;
+}
+
+.buscador-contenedor {
+    margin-bottom: 1rem;
+}
+
+#buscador {
+    width: 100%;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    border-radius: 6px;
+    border: 1px solid #aaa;
+}
