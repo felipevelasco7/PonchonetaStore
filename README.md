@@ -28,9 +28,9 @@ Despliegue automático paso a paso
 Desde la terminal, en la raíz del repositorio:
 
 ```bash
-chmod +x scripts/deploy-ponchoneta.sh
+chmod +x deploy-ponchoneta.sh
 
-./scripts/deploy-ponchoneta.sh
+./deploy-ponchoneta.sh
 
 ```
 El script solicitará la contraseña para el usuario administrador de RDS.
