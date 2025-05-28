@@ -17,7 +17,7 @@ Parameters:
     Description: Nombre de la base de datos
   DBUsername:
     Type: String
-    Default: admin
+    Default: poncho
     Description: Usuario maestro de la base de datos
   DBPassword:
     Type: String

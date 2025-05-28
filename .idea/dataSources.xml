@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="ponchonetaDB@localhost" uuid="a138542a-b561-499b-bab0-8a8472d956cf">
+    <data-source source="LOCAL" name="ponchonetaDB@127.0.0.1" uuid="a138542a-b561-499b-bab0-8a8472d956cf">
       <driver-ref>mysql.8</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
-      <jdbc-url>jdbc:mysql://localhost:3306/ponchonetaDB</jdbc-url>
+      <jdbc-url>jdbc:mysql://127.0.0.1:3306/ponchonetaDB</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
   </component>
