@@ -184,25 +184,25 @@
         const currency = "COP";
 
         try {
-            // Obtener firma desde backend
+            const expirationTime = new Date(Date.now() + 15 * 60 * 1000).toISOString(); // +15 minutos
+
+// Obtener firma desde backend con expirationTime
             const response = await fetch('http://localhost:3000/api/generate-signature', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ reference, amount, currency })
+                body: JSON.stringify({ reference, amount, currency, expirationTime })
             });
             const data = await response.json();
             const signature = data.signature;
-            if (!signature) throw new Error("No se pudo obtener la firma");
 
-            // Crear checkout Wompi
             const checkout = new WidgetCheckout({
-                currency: 'COP',
+                currency: currency,
                 amountInCents: amount,
                 reference,
-                publicKey: 'pub_test_7OBPgywA4RKSR7r3HiLFdZk6D3iTcV8I', // Llave pública Wompi
+                publicKey: 'pub_test_7OBPgywA4RKSR7r3HiLFdZk6D3iTcV8I', // Tu llave pública Wompi
                 signature: { integrity: signature },
-                redirectUrl: 'http://localhost:3000/pagos/respuesta', // URL redirección
-                expirationTime: new Date(Date.now() + 15 * 60 * 1000).toISOString(),
+                redirectUrl: 'http://localhost:3000/pagos/respuesta',
+                expirationTime: expirationTime,
                 customerData: {
                     email: datosComprador.email,
                     fullName: datosComprador.nombre,

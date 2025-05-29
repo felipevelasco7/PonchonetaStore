@@ -32,16 +32,26 @@ app.get('/api/products', async (req, res) => {
 
 // Generar firma de integridad (firma SHA256) para Wompi
 app.post('/api/generate-signature', (req, res) => {
-    const { reference, amount, currency } = req.body;
+    const { reference, amount, currency, expirationTime } = req.body;
+
     if (!reference || !amount || !currency) {
         return res.status(400).json({ error: 'Faltan datos para la firma' });
     }
-    const secret = process.env.WOMPI_SECRET_KEY; // Coloca tu llave secreta en .env
 
-    const data = reference + amount + currency + secret;
-    const signature = crypto.createHash('sha256').update(data).digest('hex');
+    const secret = process.env.WOMPI_SECRET_KEY; // tu secreto prod_integrity_...
+
+    // Concatenar en orden correcto
+    let dataToHash = reference + amount + currency;
+    if (expirationTime) {
+        dataToHash += expirationTime;
+    }
+    dataToHash += secret;
+
+    const signature = crypto.createHash('sha256').update(dataToHash).digest('hex');
+
     res.json({ signature });
 });
+
 
 // Crear una orden
 app.post('/api/orders', async (req, res) => {
