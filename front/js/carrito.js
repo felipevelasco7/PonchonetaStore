@@ -47,7 +47,6 @@
 
             actualizarBotonesEliminar();
             actualizarTotal();
-
         } else {
             contenedorCarritoVacio.classList.remove("disabled");
             contenedorCarritoProductos.classList.add("disabled");
@@ -120,7 +119,7 @@
 
     botonComprar.addEventListener("click", comprarCarrito);
 
-    function comprarCarrito() {
+    async function comprarCarrito() {
         if (productosEnCarrito.length === 0) {
             Toastify({
                 text: "El carrito está vacío",
@@ -133,62 +132,124 @@
             return;
         }
 
-        Swal.fire({
+        // Mostrar formulario para ingresar datos del comprador
+        const { value: datosComprador } = await Swal.fire({
             title: 'Datos del comprador',
             html:
-                `<input type="text" id="nombre" class="swal2-input" placeholder="Nombre completo" />
+                `<input type="text" id="nombre" class="swal2-input" placeholder="Nombre" />
                  <input type="email" id="email" class="swal2-input" placeholder="Correo electrónico" />
-                 <input type="tel" id="celular" class="swal2-input" placeholder="Número de contacto" />
+                 <input type="tel" id="celular" class="swal2-input" placeholder="Celular" />
+                 <select id="legalIdType" class="swal2-select">
+                     <option value="" disabled selected>Tipo de documento</option>
+                     <option value="RUC">RUC</option>
+                     <option value="RG">RG</option>
+                     <option value="OTHER">OTHER</option>
+                     <option value="RC">RC</option>
+                     <option value="TI">TI</option>
+                     <option value="CC">CC</option>
+                     <option value="TE">TE</option>
+                     <option value="CE">CE</option>
+                     <option value="NIT">NIT</option>
+                     <option value="PP">PP</option>
+                     <option value="DNI">DNI</option>
+                 </select>
+                 <input type="text" id="legalId" class="swal2-input" placeholder="Número de documento" />
                  <input type="text" id="ciudad" class="swal2-input" placeholder="Ciudad" />
+                 <input type="text" id="region" class="swal2-input" placeholder="Departamento" />
                  <input type="text" id="direccion" class="swal2-input" placeholder="Dirección de envío completa" />`,
             focusConfirm: false,
             preConfirm: () => {
                 const nombre = Swal.getPopup().querySelector('#nombre').value.trim();
                 const email = Swal.getPopup().querySelector('#email').value.trim();
                 const celular = Swal.getPopup().querySelector('#celular').value.trim();
+                const legalIdType = Swal.getPopup().querySelector('#legalIdType').value;
+                const legalId = Swal.getPopup().querySelector('#legalId').value.trim();
                 const ciudad = Swal.getPopup().querySelector('#ciudad').value.trim();
+                const region = Swal.getPopup().querySelector('#region').value.trim();
                 const direccion = Swal.getPopup().querySelector('#direccion').value.trim();
 
-                if (!nombre || !email || !celular || !ciudad || !direccion) {
+                if (!nombre || !email || !celular || !legalIdType || !legalId || !ciudad || !region || !direccion) {
                     Swal.showValidationMessage(`Por favor completa todos los campos`);
                     return false;
                 }
-                return { nombre, email, celular, ciudad, direccion };
-            }
-        }).then((result) => {
-            if (result.isConfirmed) {
-                guardarDatosYFinalizarCompra(result.value);
+
+                return { nombre, email, celular, legalIdType, legalId, ciudad, region, direccion };
             }
         });
-    }
 
-    function guardarDatosYFinalizarCompra(datosComprador) {
-        const orden = {
-            productos: productosEnCarrito,
-            comprador: datosComprador,
-            fecha: new Date().toISOString()
-        };
+        if (!datosComprador) return; // Si cancela
 
-        fetch('http://localhost:3000/api/orders', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(orden)
-        })
-            .then(resp => resp.json())
-            .then(data => {
-                console.log('Orden guardada:', data);
-                productosEnCarrito = [];
-                localStorage.setItem("productos-en-carrito", JSON.stringify(productosEnCarrito));
-                cargarProductosCarrito();
+        const reference = 'payment_' + Date.now();
+        const amount = productosEnCarrito.reduce((total, producto) => total + (producto.price * producto.cantidad), 0) * 100; // En centavos
+        const currency = "COP";
 
-                contenedorCarritoVacio.classList.add("disabled");
-                contenedorCarritoProductos.classList.add("disabled");
-                contenedorCarritoAcciones.classList.add("disabled");
-                contenedorCarritoComprado.classList.remove("disabled");
-            })
-            .catch(err => {
-                console.error('Error guardando orden:', err);
-                alert("Error al guardar la orden. Intente de nuevo.");
+        try {
+            // Obtener firma desde backend
+            const response = await fetch('http://localhost:3000/api/generate-signature', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ reference, amount, currency })
             });
+            const data = await response.json();
+            const signature = data.signature;
+            if (!signature) throw new Error("No se pudo obtener la firma");
+
+            // Crear checkout Wompi
+            const checkout = new WidgetCheckout({
+                currency: 'COP',
+                amountInCents: amount,
+                reference,
+                publicKey: 'pub_test_7OBPgywA4RKSR7r3HiLFdZk6D3iTcV8I', // Llave pública Wompi
+                signature: { integrity: signature },
+                redirectUrl: 'http://localhost:3000/pagos/respuesta', // URL redirección
+                expirationTime: new Date(Date.now() + 15 * 60 * 1000).toISOString(),
+                customerData: {
+                    email: datosComprador.email,
+                    fullName: datosComprador.nombre,
+                    phoneNumber: datosComprador.celular,
+                    phoneNumberPrefix: '+57',
+                    legalId: datosComprador.legalId,
+                    legalIdType: datosComprador.legalIdType
+                },
+                shippingAddress: {
+                    addressLine1: datosComprador.direccion,
+                    city: datosComprador.ciudad,
+                    phoneNumber: datosComprador.celular,
+                    region: datosComprador.region,
+                    country: 'CO'
+                }
+            });
+
+            checkout.open(result => {
+                console.log("Resultado de la transacción:", result);
+
+                if (result.transaction && result.transaction.status === "APPROVED") {
+                    // Guardar orden en backend
+                    fetch('http://localhost:3000/api/orders', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            productos: productosEnCarrito,
+                            comprador: datosComprador
+                        })
+                    })
+                        .then(resp => resp.json())
+                        .then(data => {
+                            console.log('Orden guardada:', data);
+                            productosEnCarrito = [];
+                            localStorage.setItem("productos-en-carrito", JSON.stringify(productosEnCarrito));
+                            // Actualizar UI del carrito
+                        })
+                        .catch(err => {
+                            console.error('Error guardando la orden:', err);
+                        });
+                } else {
+                    alert("Pago no aprobado o cancelado.");
+                }
+            });
+        } catch (error) {
+            console.error("Error generando firma o abriendo el widget:", error);
+            alert("No se pudo iniciar el pago. Intente más tarde.");
+        }
     }
 })();
