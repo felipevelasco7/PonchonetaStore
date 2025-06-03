@@ -1,0 +1,58 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Base de datos MySQL RDS para la aplicacion web, usando subredes privadas importadas de un stack de red.
+
+Parameters:
+  DBUsername:
+    Description: Usuario administrador de la base de datos
+    Type: String
+    Default: admin
+
+  DBPassword:
+    Description: Contrasena del usuario administrador
+    Type: String
+    NoEcho: true
+
+  NetworkStackName:
+    Description: Nombre del stack de red exportador
+    Type: String
+    Default: WebAppNetwork
+
+Resources:
+
+  DBSubnetGroup:
+    Type: AWS::RDS::DBSubnetGroup
+    Properties:
+      DBSubnetGroupDescription: Subredes privadas para RDS
+      SubnetIds:
+        - Fn::ImportValue: !Sub "${NetworkStackName}-PrivateSubnetA"
+        - Fn::ImportValue: !Sub "${NetworkStackName}-PrivateSubnetB"
+
+  DatabaseSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Acceso desde instancias de aplicacion
+      VpcId:
+        Fn::ImportValue: !Sub "${NetworkStackName}-VPCID"
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 3306
+          ToPort: 3306
+          CidrIp: 10.0.0.0/16
+
+  MySQLDatabase:
+    Type: AWS::RDS::DBInstance
+    Properties:
+      Engine: MySQL
+      DBInstanceClass: db.t3.micro
+      MasterUsername: !Ref DBUsername
+      MasterUserPassword: !Ref DBPassword
+      AllocatedStorage: 20
+      DBSubnetGroupName: !Ref DBSubnetGroup
+      VPCSecurityGroups:
+        - !Ref DatabaseSecurityGroup
+      PubliclyAccessible: false
+
+Outputs:
+  RDSHost:
+    Description: Endpoint del RDS MySQL
+    Value: !GetAtt MySQLDatabase.Endpoint.Address

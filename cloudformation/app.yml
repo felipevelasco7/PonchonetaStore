@@ -1,0 +1,117 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: "Stack de aplicación: EC2 backend Node.js + ALB + AutoScaling"
+
+Parameters:
+  LatestAmiId:
+    Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
+    Default: /aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2
+  KeyName:
+    Type: String
+    Description: Nombre del par de llaves para EC2
+
+  NetworkStackName:
+    Type: String
+    Default: WebAppNetwork
+    Description: Nombre del stack de red del cual importar subredes y VPC
+
+Resources:
+
+  ALBSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Access public to Load Balancer
+      VpcId:
+        Fn::ImportValue: !Sub "${NetworkStackName}-VPCID"
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+
+  InstanceSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Access from Load Balancer
+      VpcId:
+        Fn::ImportValue: !Sub "${NetworkStackName}-VPCID"
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 3000
+          ToPort: 3000
+          SourceSecurityGroupId: !Ref ALBSecurityGroup
+
+  LaunchTemplate:
+    Type: AWS::EC2::LaunchTemplate
+    Properties:
+      LaunchTemplateName: webapp-launch-template
+      LaunchTemplateData:
+        ImageId: !Ref LatestAmiId
+        InstanceType: t2.micro
+        KeyName: !Ref KeyName
+        SecurityGroupIds:
+          - !Ref InstanceSecurityGroup
+        UserData:
+          Fn::Base64: !Sub |
+            #!/bin/bash
+            yum update -y
+            curl -sL https://rpm.nodesource.com/setup_16.x | bash -
+            yum install -y nodejs git
+            git clone https://github.com/felipevelasco7/PonchonetaStore.git /home/ec2-user/app
+            cd /home/ec2-user/app
+            npm install
+            nohup npm start &
+
+  ALB:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      Name: webapp-alb
+      Subnets:
+        - Fn::ImportValue: !Sub "${NetworkStackName}-PublicSubnetA"
+        - Fn::ImportValue: !Sub "${NetworkStackName}-PublicSubnetB"
+      SecurityGroups:
+        - !Ref ALBSecurityGroup
+      Scheme: internet-facing
+      Type: application
+
+  ALBTargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      VpcId:
+        Fn::ImportValue: !Sub "${NetworkStackName}-VPCID"
+      Port: 3000
+      Protocol: HTTP
+      TargetType: instance
+      HealthCheckPath: /
+
+  ALBListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn: !Ref ALBTargetGroup
+      LoadBalancerArn: !Ref ALB
+      Port: 80
+      Protocol: HTTP
+
+  AutoScalingGroup:
+    Type: AWS::AutoScaling::AutoScalingGroup
+    Properties:
+      VPCZoneIdentifier:
+        - Fn::ImportValue: !Sub "${NetworkStackName}-PrivateSubnetA"
+        - Fn::ImportValue: !Sub "${NetworkStackName}-PrivateSubnetB"
+      LaunchTemplate:
+        LaunchTemplateId: !Ref LaunchTemplate
+        Version: !GetAtt LaunchTemplate.LatestVersionNumber
+      MinSize: 2
+      MaxSize: 4
+      TargetGroupARNs:
+        - !Ref ALBTargetGroup
+      Tags:
+        - Key: Name
+          Value: WebAppNodeInstance
+          PropagateAtLaunch: true
+
+Outputs:
+  ALBURL:
+    Description: URL pública de la aplicación web
+    Value: !Sub "http://${ALB.DNSName}"

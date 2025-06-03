@@ -1,6 +1,7 @@
 README.md corregido y mejorado para tu proyecto
-markdown
-Copy
+para la prueba de la pasarela: ngrok http 3000 
+202 carrito.js llaves de wompi
+
 # Ponchoneta Fútbol - Despliegue Completo en AWS
 
 Este repositorio contiene el código fuente y las plantillas CloudFormation para desplegar la aplicación Ponchoneta Fútbol en AWS con:
