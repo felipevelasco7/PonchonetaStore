@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: "Stack de aplicación: EC2 backend Node.js + ALB + AutoScaling"
+Description: "Stack de aplicacion: EC2 backend Node.js + ALB + AutoScaling"
 
 Parameters:
   LatestAmiId:
@@ -113,5 +113,5 @@ Resources:
 
 Outputs:
   ALBURL:
-    Description: URL pública de la aplicación web
+    Description: URL pública de la aplicacion web
     Value: !Sub "http://${ALB.DNSName}"
