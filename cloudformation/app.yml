@@ -57,9 +57,9 @@ Resources:
             curl -sL https://rpm.nodesource.com/setup_16.x | bash -
             yum install -y nodejs git
             git clone https://github.com/felipevelasco7/PonchonetaStore.git /home/ec2-user/app
-            cd /home/ec2-user/app
+            cd /home/ec2-user/app/back
             npm install
-            nohup npm start &
+            nohup node server.js > /home/ec2-user/server.log 2>&1 &
 
   ALB:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
@@ -97,8 +97,8 @@ Resources:
     Type: AWS::AutoScaling::AutoScalingGroup
     Properties:
       VPCZoneIdentifier:
-        - Fn::ImportValue: !Sub "${NetworkStackName}-PrivateSubnetA"
-        - Fn::ImportValue: !Sub "${NetworkStackName}-PrivateSubnetB"
+        - Fn::ImportValue: !Sub "${NetworkStackName}-PublicSubnetA"
+        - Fn::ImportValue: !Sub "${NetworkStackName}-PublicSubnetB"
       LaunchTemplate:
         LaunchTemplateId: !Ref LaunchTemplate
         Version: !GetAtt LaunchTemplate.LatestVersionNumber
@@ -113,5 +113,5 @@ Resources:
 
 Outputs:
   ALBURL:
-    Description: URL pública de la aplicacion web
+    Description: URL publica de la aplicacion web
     Value: !Sub "http://${ALB.DNSName}"
