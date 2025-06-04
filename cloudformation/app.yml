@@ -49,6 +49,11 @@ Resources:
           FromPort: 3000
           ToPort: 3000
           SourceSecurityGroupId: !Ref ALBSecurityGroup
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+
       SecurityGroupEgress:
         - IpProtocol: -1
           CidrIp: 0.0.0.0/0
@@ -72,6 +77,7 @@ Resources:
             git clone https://github.com/felipevelasco7/PonchonetaStore.git /home/ec2-user/app
             cd /home/ec2-user/app
             sleep 60
+            mysql -h ${RDSHost} -u poncho -p${DBPassword} -e "CREATE DATABASE IF NOT EXISTS ponchonetaDB;"
             mysql -h ${RDSHost} -u poncho -p${DBPassword} ponchonetaDB < db/ponchonetaDB.sql
 
             mkdir -p /home/ec2-user/app/back
