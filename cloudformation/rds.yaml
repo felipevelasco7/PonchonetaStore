@@ -46,16 +46,16 @@ Resources:
     Type: AWS::RDS::DBInstance
     Properties:
       DBName: !Ref DBName
-      AllocatedStorage: "20" # Mínimo 20 GiB para db.t3.micro
+      AllocatedStorage: "20" # Minimo 20 GiB para db.t3.micro
       DBInstanceClass: db.t3.micro
       Engine: mysql
-      EngineVersion: "8.0" # Especificar una versión compatible
+      EngineVersion: "8.0" # Especificar una version compatible
       MasterUsername: !Ref DBUsername
       MasterUserPassword: !Ref DBPassword
       DBSubnetGroupName: !Ref PonchonetaDBSubnetGroup
       VPCSecurityGroups:
-        - !Ref RDSSecurityGroup # Asigna el SG específico de RDS
-      PubliclyAccessible: true # Necesario si las subredes son públicas y no hay NAT Gateway para acceso de UserData
+        - !Ref RDSSecurityGroup # Asigna el SG especifico de RDS
+      PubliclyAccessible: true # Necesario si las subredes son publicas y no hay NAT Gateway para acceso de UserData
       MultiAZ: false # Para cumplir con limitaciones de sandbox y db.t3.micro
       StorageType: gp2
       Tags:

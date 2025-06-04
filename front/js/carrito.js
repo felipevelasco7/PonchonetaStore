@@ -187,7 +187,9 @@
             const expirationTime = new Date(Date.now() + 15 * 60 * 1000).toISOString(); // +15 minutos
 
 // Obtener firma desde backend con expirationTime
-            const response = await fetch('http://localhost:3000/api/generate-signature', {
+            //const response = await fetch('http://localhost:3000/api/generate-signature', {
+            const response = await fetch('/api/generate-signature', {
+
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ reference, amount, currency, expirationTime })
@@ -201,7 +203,9 @@
                 reference,
                 publicKey: 'pub_test_7OBPgywA4RKSR7r3HiLFdZk6D3iTcV8I', // Tu llave pública Wompi
                 signature: { integrity: signature },
-                redirectUrl: 'http://localhost:3000/pagos/respuesta',
+                //redirectUrl: 'http://localhost:3000/pagos/respuesta',
+                redirectUrl: `${window.location.origin}/pagos/respuesta`,
+
                 expirationTime: expirationTime,
                 customerData: {
                     email: datosComprador.email,
@@ -225,7 +229,9 @@
 
                 if (result.transaction && result.transaction.status === "APPROVED") {
                     // Guardar orden en backend
-                    fetch('http://localhost:3000/api/orders', {
+                    //fetch('http://localhost:3000/api/orders', {
+                    fetch('/api/orders', {
+
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({

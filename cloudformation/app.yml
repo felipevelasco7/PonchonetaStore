@@ -20,6 +20,10 @@ Parameters:
     NoEcho: true
     Description: Contraseña de la base de datos MySQL RDS
 
+  RDSHost:
+    Type: String
+    Description: Endpoint del RDS MySQL
+
 Resources:
 
   ALBSecurityGroup:
@@ -68,10 +72,20 @@ Resources:
             git clone https://github.com/felipevelasco7/PonchonetaStore.git /home/ec2-user/app
             cd /home/ec2-user/app
             sleep 60
-            mysql -h ${WebAppDatabase-RDSHost} -u admin -p${DBPassword} ponchonetaDB < db/ponchonetaDB.sql
+            mysql -h ${RDSHost} -u poncho -p${DBPassword} ponchonetaDB < db/ponchonetaDB.sql
+            cat <<EOF > /home/ec2-user/app/back/.env
+            DB_HOST=${RDSHost}
+            DB_USER=poncho
+            DB_PASSWORD=${DBPassword}
+            DB_NAME=ponchonetaDB
+            WOMPI_PUBLIC_KEY='pub_test_7OBPgywA4RKSR7r3HiLFdZk6D3iTcV8I'
+            WOMPI_PRIVATE_KEY='prv_test_TEzadcH5GpXBbMfyToyus0KyLlHNmdw4'
+            WOMPI_SECRET_KEY='test_integrity_yrxAsjSsxDCXWJwxJURuxwxxiAWxZHGU'
+            EOF
             cd /home/ec2-user/app/back
             npm install
             nohup node server.js > /home/ec2-user/server.log 2>&1 &
+
 
   ALB:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer

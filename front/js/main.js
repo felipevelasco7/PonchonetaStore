@@ -1,5 +1,10 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const productos_json_url = 'http://localhost:3000/api/products';
+    //const productos_json_url = 'http://localhost:3000/api/products';
+    //const productos_json_url = '/api/products';
+    const baseUrl = window.location.origin;
+    const productos_json_url = `${baseUrl}/api/products`;
+
+
     let todosLosProductos = [];
 
     const contenedorProductos = document.querySelector("#contenedor-productos");
