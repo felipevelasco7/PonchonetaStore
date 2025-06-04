@@ -5,6 +5,7 @@ Parameters:
   LatestAmiId:
     Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
     Default: /aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2
+
   KeyName:
     Type: String
     Description: Nombre del par de llaves para EC2
@@ -13,6 +14,11 @@ Parameters:
     Type: String
     Default: WebAppNetwork
     Description: Nombre del stack de red del cual importar subredes y VPC
+
+  DBPassword:
+    Type: String
+    NoEcho: true
+    Description: Contraseña de la base de datos MySQL RDS
 
 Resources:
 
@@ -39,6 +45,9 @@ Resources:
           FromPort: 3000
           ToPort: 3000
           SourceSecurityGroupId: !Ref ALBSecurityGroup
+      SecurityGroupEgress:
+        - IpProtocol: -1
+          CidrIp: 0.0.0.0/0
 
   LaunchTemplate:
     Type: AWS::EC2::LaunchTemplate
@@ -55,8 +64,11 @@ Resources:
             #!/bin/bash
             yum update -y
             curl -sL https://rpm.nodesource.com/setup_16.x | bash -
-            yum install -y nodejs git
+            yum install -y nodejs git mysql
             git clone https://github.com/felipevelasco7/PonchonetaStore.git /home/ec2-user/app
+            cd /home/ec2-user/app
+            sleep 60
+            mysql -h ${WebAppDatabase-RDSHost} -u admin -p${DBPassword} ponchonetaDB < db/ponchonetaDB.sql
             cd /home/ec2-user/app/back
             npm install
             nohup node server.js > /home/ec2-user/server.log 2>&1 &

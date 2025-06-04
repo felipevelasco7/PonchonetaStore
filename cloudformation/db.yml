@@ -56,3 +56,5 @@ Outputs:
   RDSHost:
     Description: Endpoint del RDS MySQL
     Value: !GetAtt MySQLDatabase.Endpoint.Address
+    Export:
+      Name: WebAppDatabase-RDSHost
