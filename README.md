@@ -1,5 +1,5 @@
 README.md corregido y mejorado para tu proyecto
-para la prueba de la pasarela: ngrok http 3000 
+para la prueba de la pasarela: ngrok http 3000
 202 carrito.js llaves de wompi
 
 # Ponchoneta Fútbol - Despliegue Completo en AWS
@@ -91,3 +91,28 @@ nohup node server.js > /home/ec2-user/server.log 2>&1 &
 
 
 # Numero nequi 3991111111
+
+
+# Para conseguir las ip publicas de las instancias
+aws ec2 describe-instances \
+--query 'Reservations[*].Instances[*].[InstanceId, Tags[?Key==`Name`]|[0].Value, PublicIpAddress]' \
+--output table
+
+# Conectarse por SSH
+chmod 400 llave.pem
+ssh -i llave.pem ec2-user@98.83.110.83
+
+# apagar back
+sudo pkill node
+
+# Reiniciar back
+
+nohup node server.js
+# mirar logs
+tail -f /home/ec2-user/nohup.out
+
+# simular estress
+sudo yum install -y stress
+stress --cpu 2 --timeout 300
+yes > /dev/null &
+yes > /dev/null &

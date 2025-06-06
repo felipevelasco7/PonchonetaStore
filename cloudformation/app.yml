@@ -86,9 +86,9 @@ Resources:
             DB_USER=poncho
             DB_PASSWORD=${DBPassword}
             DB_NAME=ponchonetaDB
-            WOMPI_PUBLIC_KEY='pub_test_7OBPgywA4RKSR7r3HiLFdZk6D3iTcV8I'
-            WOMPI_PRIVATE_KEY='prv_test_TEzadcH5GpXBbMfyToyus0KyLlHNmdw4'
-            WOMPI_SECRET_KEY='test_integrity_yrxAsjSsxDCGk2sfDqL'
+            WOMPI_PUBLIC_KEY=pub_test_7OBPgywA4RKSR7r3HiLFdZk6D3iTcV8I
+            WOMPI_PRIVATE_KEY=prv_test_TEzadcH5GpXBbMfyToyus0KyLlHNmdw4
+            WOMPI_SECRET_KEY=test_integrity_yrxAsjSsxDCGk2sfDqL
             EOF
             
             cd /home/ec2-user/app/back
@@ -145,8 +145,62 @@ Resources:
         - Key: Name
           Value: WebAppNodeInstance
           PropagateAtLaunch: true
+  SNSTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: WebAppAlerts
+
+  SNSEmailSubscription:
+    Type: AWS::SNS::Subscription
+    Properties:
+      TopicArn: !Ref SNSTopic
+      Protocol: email
+      Endpoint: felipevelasco753@gmail.com
+
+  CPUHighAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: WebApp-CPUHigh
+      AlarmDescription: Alerta si el uso de CPU pasa del 70% durante 5 min
+      Namespace: AWS/EC2
+      MetricName: CPUUtilization
+      Dimensions:
+        - Name: AutoScalingGroupName
+          Value: !Ref AutoScalingGroup
+      Statistic: Average
+      Period: 30
+      EvaluationPeriods: 1
+      Threshold: 60
+      ComparisonOperator: GreaterThanThreshold
+      AlarmActions:
+        - !Ref SNSTopic
+
+  UnhealthyHostsAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: WebApp-UnhealthyHosts
+      AlarmDescription: Alerta si hay instancias no saludables en el target group
+      Namespace: AWS/ApplicationELB
+      MetricName: UnHealthyHostCount
+      Dimensions:
+        - Name: TargetGroup
+          Value: !GetAtt ALBTargetGroup.TargetGroupFullName
+        - Name: LoadBalancer
+          Value: !GetAtt ALB.LoadBalancerFullName
+      Statistic: Average
+      Period: 60
+      EvaluationPeriods: 2
+      Threshold: 0
+      ComparisonOperator: GreaterThanThreshold
+      AlarmActions:
+        - !Ref SNSTopic
 
 Outputs:
   ALBURL:
     Description: URL publica de la aplicacion web
     Value: !Sub "http://${ALB.DNSName}"
+
+  AlertTopic:
+    Description: SNS topic para recibir alertas
+    Value: !Ref SNSTopic
+
