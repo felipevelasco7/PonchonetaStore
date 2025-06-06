@@ -12,19 +12,6 @@ Este repositorio contiene el código fuente y las plantillas CloudFormation para
 - Auto Scaling Group con instancias EC2 que corren backend Node.js y frontend estático
 
 ---
-
-## Requisitos Previos
-
-1. Tener AWS CLI configurado con credenciales válidas y permisos para los servicios necesarios:
-
-```bash
-git clone https://github.com/felipevelasco7/PonchonetaStore.git
-cd PonchonetaStore
-chmod +x script.sh
-
-./script.sh
-
-```
 ## Pasos para desplegar App
 1. Crear llave con el nombre "llave"
 2. Correr estos comandos:
