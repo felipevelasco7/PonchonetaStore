@@ -18,7 +18,6 @@ Este repositorio contiene el código fuente y las plantillas CloudFormation para
 1. Tener AWS CLI configurado con credenciales válidas y permisos para los servicios necesarios:
 
 ```bash
-aws configure
 git clone https://github.com/felipevelasco7/PonchonetaStore.git
 cd PonchonetaStore
 chmod +x script.sh
@@ -54,9 +53,6 @@ yes > /dev/null &
 Copiar la URL de la pagina web y pegarla en wompi para obtener las llaves publicas, privadas y secreta
 
 
-
-
-
 ## Otros comandos
 
 # Para cambiar las llaves, desde una instancia EC2 por ssh
@@ -78,17 +74,14 @@ WOMPI_SECRET_KEY=
 
 
 # Matar proceso Node.js actual
-sudo pkill node
+```bash
 
+sudo pkill node
 # Dar permisos
 sudo chmod 777 /home/ec2-user/server.log
 
 # Reiniciar backend
 nohup node server.js > /home/ec2-user/server.log 2>&1 &
-
-
-# Numero nequi 3991111111
-
 
 # Para conseguir las ip publicas de las instancias
 aws ec2 describe-instances \
@@ -112,10 +105,19 @@ tail -f /home/ec2-user/nohup.out
 yes > /dev/null &
 yes > /dev/null &
 
+```
+
+# Numero nequi de prueba 3991111111
+
+
+
 # Pruebas locales
+
+```bash
 node server.js
 mysql -u poncho -p
 brew services list
 brew services start mysql
 ngrok http 3000
 pegar la url en wompi
+```
