@@ -1,5 +1,4 @@
-para la prueba de la pasarela: ngrok http 3000
-202 carrito.js llaves de wompi
+
 
 # Ponchoneta Fútbol - Despliegue Completo en AWS
 
@@ -108,3 +107,6 @@ brew services start mysql
 ngrok http 3000
 pegar la url en wompi
 ```
+
+para la prueba de la pasarela: ngrok http 3000
+202 carrito.js llaves de wompi
