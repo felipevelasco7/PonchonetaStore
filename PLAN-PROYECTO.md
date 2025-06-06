@@ -4,8 +4,7 @@
 - Kevin Banguero 
 - Alexis Jaramillo
 - Felipe Velasco
--
--
+
 **Fecha:** 06/06/2002  
 **Versión:** 1.0  
 
