@@ -1,7 +1,10 @@
 #!/bin/bash
-
+#Crear llave
 #git clone https://github.com/felipevelasco7/PonchonetaStore.git
 #cd PonchonetaStore
+#chmod +x script.sh
+#./script.sh
+
 
 
 set -e
