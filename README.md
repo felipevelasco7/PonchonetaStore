@@ -116,3 +116,11 @@ sudo yum install -y stress
 stress --cpu 2 --timeout 300
 yes > /dev/null &
 yes > /dev/null &
+
+# Pruebas locales
+node server.js
+mysql -u poncho -p
+brew services list
+brew services start mysql
+ngrok http 3000
+pegar la url en wompi

@@ -196,6 +196,7 @@
             });
             const data = await response.json();
             const signature = data.signature;
+            console.log(`${window.location.origin}/pagos/respuesta`);
 
             const checkout = new WidgetCheckout({
                 currency: currency,
@@ -205,7 +206,6 @@
                 signature: { integrity: signature },
                 //redirectUrl: 'http://localhost:3000/pagos/respuesta',
                 redirectUrl: `${window.location.origin}/pagos/respuesta`,
-
                 expirationTime: expirationTime,
                 customerData: {
                     email: datosComprador.email,

@@ -61,7 +61,7 @@ Resources:
   LaunchTemplate:
     Type: AWS::EC2::LaunchTemplate
     Properties:
-      LaunchTemplateName: webapp-launch-template
+      LaunchTemplateName: !Sub "webapp-launch-template-${AWS::StackName}"
       LaunchTemplateData:
         ImageId: !Ref LatestAmiId
         InstanceType: t2.micro
@@ -90,7 +90,8 @@ Resources:
             WOMPI_PRIVATE_KEY=prv_test_TEzadcH5GpXBbMfyToyus0KyLlHNmdw4
             WOMPI_SECRET_KEY=test_integrity_yrxAsjSsxDCGk2sfDqL
             EOF
-            
+  
+
             cd /home/ec2-user/app/back
             npm install
             nohup node server.js > /home/ec2-user/server.log 2>&1 &

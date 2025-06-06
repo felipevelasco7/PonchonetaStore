@@ -3,9 +3,12 @@ document.addEventListener("DOMContentLoaded", () => {
     //const productos_json_url = '/api/products';
     const baseUrl = window.location.origin;
     const productos_json_url = `${baseUrl}/api/products`;
+    console.log("productos url",productos_json_url)
 
 
     let todosLosProductos = [];
+    console.log(todosLosProductos)
+
 
     const contenedorProductos = document.querySelector("#contenedor-productos");
     const botonesCategorias = document.querySelectorAll(".boton-categoria");
@@ -48,6 +51,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (categoriaSeleccionada === "todos") {
                     tituloPrincipal.innerText = "Todos los productos";
                     cargarProductos(todosLosProductos);
+                    console.log("cargando todos")
                 } else if (categoriaSeleccionada === "otros") {
                     // Mostrar productos que NO son Camiseta ni Medias (puedes adaptar según categorías reales)
                     const productosFiltrados = todosLosProductos.filter(p => {
@@ -87,6 +91,7 @@ document.addEventListener("DOMContentLoaded", () => {
             console.error("#contenedor-productos no encontrado.");
             return;
         }
+
 
         contenedorProductos.innerHTML = "";
 
@@ -176,8 +181,10 @@ document.addEventListener("DOMContentLoaded", () => {
     fetch(productos_json_url)
         .then(resp => resp.json())
         .then(data => {
+            console.log(data)
             todosLosProductos = data;
             cargarProductos(todosLosProductos);
+            console.log(todosLosProductos)
         })
         .catch(err => {
             console.error("Error cargando productos:", err);
